@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="petsafe-smartfeed",
-    version="1.0.0",
+    version="1.1.0",
     author="Jordan Stremming",
     author_email="jcstremming@gmail.com",
     description="Provides ability to connect and control a PetSafe Smart Feed device using the PetSafe-SmartFeed API.",

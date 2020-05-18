@@ -1,4 +1,5 @@
-import os
+import sys
+import argparse
 
 from requests import HTTPError
 
@@ -55,9 +56,21 @@ def load_token_file(file):
         return f.read()
 
 
-if __name__ == '__main__':
-    if os.path.exists('../token.txt'):
-        tkn = load_token_file('../token.txt')
-    else:
-        tkn = cli_get_token()
-    fs = cli_feeder(tkn)
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-t', '--token',
+                    action='store_true',
+                    help='generate an access token')
+
+# if no arguments specified, show help
+if len(sys.argv) < 2:
+    parser.print_help()
+    sys.exit(1)
+
+# parse for arguments
+args = parser.parse_args()
+
+# generate token
+if args.token:
+    cli_get_token()
+    exit(0)
