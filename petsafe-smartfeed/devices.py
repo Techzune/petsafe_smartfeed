@@ -1,5 +1,5 @@
 import json
-import api
+from . import api
 
 
 def get_feeders(token):

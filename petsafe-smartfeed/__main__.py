@@ -3,8 +3,8 @@ import argparse
 
 from requests import HTTPError
 
-from api import request_token_from_code, request_code
-from devices import get_feeders
+from .api import request_token_from_code, request_code
+from .devices import get_feeders
 
 
 def cli_feeder(token):
