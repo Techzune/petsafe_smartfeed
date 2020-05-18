@@ -1,0 +1,4 @@
+.idea/*
+build/*
+dist/*
+petsafe_smartfeed_techzune.egg-info/*
