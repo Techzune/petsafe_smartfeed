@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="petsafe-smartfeed-techzune",
+    name="petsafe-smartfeed",
     version="1.0.0",
     author="Jordan Stremming",
     author_email="jcstremming@gmail.com",
