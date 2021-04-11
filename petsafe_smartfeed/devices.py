@@ -196,7 +196,7 @@ class DeviceSmartFeed:
     @property
     def food_sensor_current(self):
         """The feeder's food sensor status."""
-        return self.data['data']['food_sensor_current']
+        return self.data['food_sensor_current']
 
     @property
     def food_low_status(self):
@@ -206,4 +206,4 @@ class DeviceSmartFeed:
         :return: 0 if Full, 1 if Low, 2 if Empty
 
         """
-        return int(self.data['data']['is_food_low'])
+        return int(self.data['is_food_low'])
