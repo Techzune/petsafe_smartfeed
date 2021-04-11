@@ -192,3 +192,18 @@ class DeviceSmartFeed:
     @pet_type.setter
     def pet_type(self, value):
         self.put_setting('pet_type', value)
+
+    @property
+    def food_sensor_current(self):
+        """The feeder's food sensor status."""
+        return self.data['data']['food_sensor_current']
+
+    @property
+    def food_low_status(self):
+        """
+        The feeder's food low status.
+
+        :return: 0 if Full, 1 if Low, 2 if Empty
+
+        """
+        return int(self.data['data']['is_food_low'])
