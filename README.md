@@ -2,11 +2,13 @@
 Connect and control a PetSafe Smart Feed device using the PetSafe-SmartFeed API.
 
 ## Installation
-`python3 setup.py install`
+`python setup.py install`
 
 ## Tokens
 You **must** have a token to use the PetSafe Smart-Feed API.
-Run `python3 -m petsafe-smartfeed -t` and follow the prompts.
+1. Run `python -m petsafe-smartfeed [email_address]` to request an email code.
+2. Check your email for an email code from PetSafe.
+3. Run `python -m petsafe-smartfeed [email_address] -t [email_code]` to generate a token.
 
 ## Contributing
 All contributions are welcome. 
