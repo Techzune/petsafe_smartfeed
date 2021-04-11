@@ -44,7 +44,7 @@ def cli_get_token():
     print('Your token is:', token)
 
     # output token to file
-    with open('../token.txt', 'w') as f:
+    with open('token.txt', 'w') as f:
         f.write(token)
     print('Saved token to token.txt')
     return token

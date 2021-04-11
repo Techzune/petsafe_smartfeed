@@ -4,7 +4,7 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='petsafe-smartfeed',
+    name='petsafe_smartfeed',
     version='1.1.3',
     author='Jordan Stremming',
     license='MIT',
@@ -12,7 +12,7 @@ setuptools.setup(
     description='Provides ability to connect and control a PetSafe Smart Feed device using the PetSafe-SmartFeed API.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/techzune/petsafe-smartfeed',
+    url='https://github.com/techzune/petsafe_smartfeed',
     packages=setuptools.find_packages(),
     install_requires=[
         'requests'
