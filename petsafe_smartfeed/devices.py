@@ -146,7 +146,7 @@ class DeviceSmartFeed:
             return 0
         minVoltage = 22755
         maxVoltage = 29100
-        return round(max((100 * (self.data['battery_voltage'] - minVoltage)) / (maxVoltage - minVoltage), 0))
+        return round(max((100 * (int(self.data['battery_voltage']) - minVoltage)) / (maxVoltage - minVoltage), 0))
 
     @property
     def paused(self):
