@@ -22,6 +22,13 @@ class DeviceSmartFeed:
         self.data = data
 
     def __str__(self):
+        return self.to_json()
+
+    def to_json(self):
+        """
+        All feeder data formatted as JSON.
+
+        """
         return json.dumps(self.data, indent=2)
 
     def update_data(self):
