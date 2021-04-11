@@ -104,7 +104,7 @@ class DeviceSmartFeed:
         """
         last_feeding = self.get_last_feeding()
         self.feed(last_feeding['amount'])
-        
+
     def prime(self):
         """
         Feeds 5/8 cups to prime the feeder.
@@ -137,25 +137,22 @@ class DeviceSmartFeed:
 
     @property
     def battery_level(self):
-        """The feeder's current battery level (high, medium, low, dead, not installed, unknown)."""
+        """
+        The feeder's current battery level on a scale of 0-100.
+        Returns 0 if no batteries installed.
+
+        """
         if not self.data['is_batteries_installed']:
-            return 'not installed'
-        if self.battery_voltage > 5.9:
-            return 'high'
-        elif self.battery_voltage > 5.5:
-            return 'medium'
-        elif self.battery_voltage > 5:
-            return 'low'
-        elif self.battery_voltage >= 0:
-            return 'dead'
-        else:
-            return 'unknown'
-        
+            return 0
+        minVoltage = 22755
+        maxVoltage = 29100
+        return round(max((100 * (self.data['battery_voltage'] - minVoltage)) / (maxVoltage - minVoltage), 0))
+
     @property
     def paused(self):
         """If true, the feeder will not follow its scheduling."""
         return self.data['settings']['paused']
-    
+
     @paused.setter
     def paused(self, value):
         self.put_setting('paused', value)
