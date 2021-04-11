@@ -1,6 +1,6 @@
 import json
 
-from requests import post, get, put
+import requests
 
 URL_SF_API = 'https://api.ps-smartfeed.cloud.petsafe.net/api/v2/'
 URL_SF_USER_API = 'https://users-api.ps-smartfeed.cloud.petsafe.net/users/'
@@ -32,7 +32,7 @@ def sf_post(path='', token=None, data=None):
     :return: the request response
 
     """
-    return post(URL_SF_API + path, headers=headers(token), json=data)
+    return requests.post(URL_SF_API + path, headers=headers(token), json=data)
 
 
 def sf_get(path='', token=None):
@@ -46,7 +46,7 @@ def sf_get(path='', token=None):
     :return: the request response
 
     """
-    return get(URL_SF_API + path, headers=headers(token))
+    return requests.get(URL_SF_API + path, headers=headers(token))
 
 
 def sf_put(path='', token=None, data=None):
@@ -61,7 +61,7 @@ def sf_put(path='', token=None, data=None):
     :return: the request response
 
     """
-    return put(URL_SF_API + path, headers=headers(token), json=data)
+    return requests.put(URL_SF_API + path, headers=headers(token), json=data)
 
 
 def sf_user_post(path='', token=None, data=None):
@@ -76,7 +76,7 @@ def sf_user_post(path='', token=None, data=None):
     :return: the request response
 
     """
-    return post(URL_SF_USER_API + path, headers=headers(token), json=data)
+    return requests.post(URL_SF_USER_API + path, headers=headers(token), json=data)
 
 
 def sf_user_get(path='', token=None):
@@ -90,7 +90,7 @@ def sf_user_get(path='', token=None):
     :return: the request response
 
     """
-    return get(URL_SF_USER_API + path, headers=headers(token))
+    return requests.get(URL_SF_USER_API + path, headers=headers(token))
 
 
 def request_code(email):

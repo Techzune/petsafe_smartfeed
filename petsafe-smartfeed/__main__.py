@@ -3,8 +3,7 @@ import argparse
 
 from requests import HTTPError
 
-from .api import request_token_from_code, request_code
-from .devices import get_feeders
+from . import api, devices
 
 
 def cli_feeder(token):
@@ -16,9 +15,9 @@ def cli_feeder(token):
 
     """
     try:
-        feeders = get_feeders(token)
+        feeders = devices.get_feeders(token)
     except HTTPError:
-        feeders = get_feeders(cli_get_token())
+        feeders = devices.get_feeders(cli_get_token())
     return feeders
 
 
@@ -34,12 +33,12 @@ def cli_get_token():
 
     # request an email code
     user_email = input('Your email address: ')
-    request_code(user_email)
+    api.request_code(user_email)
 
     # request the token
     print('\nPlease check your email for a code from PetSafe.')
     user_code = input('PetSafe email code: ')
-    token = request_token_from_code(user_email, user_code)
+    token = api.request_token_from_code(user_email, user_code)
 
     # output the token
     print('Your token is:', token)
