@@ -1,10 +1,11 @@
 # PetSafe Smart Feed - Python API
 Connect and control a PetSafe Smart Feed device using the PetSafe-SmartFeed API.
 
+## API Throttle Warning
+**NOTE**: PetSafe will lock your account if you request data more often than once per 5 minutes.
 
 ## Installation
 `python setup.py install`
-
 
 ## Login token
 You **must** get a login token to use the PetSafe Smart-Feed API.  
