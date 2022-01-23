@@ -16,7 +16,7 @@ def headers(token=None):
     """
     data = {'content-type': 'application/json'}
     if token:
-        data['token'] = token
+        data['Token'] = token
     return data
 
 
