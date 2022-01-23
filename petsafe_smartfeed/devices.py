@@ -119,6 +119,17 @@ class DeviceSmartFeed:
         """
         self.feed(5, False)
 
+    def get_schedules(self):
+        """
+        Requests all feeding schedules.
+
+        :return: the APIs response in JSON.
+
+        """
+        response = api.sf_get(self.api_path + 'schedules', token=self.token)
+        response.raise_for_status()
+        return json.loads(response.content.decode('UTF-8'))
+        
     def schedule_feed(self, time="00:00", amount=1, update_data=True):
         """
         Adds time and feed amount to schedule.
