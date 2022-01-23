@@ -63,6 +63,20 @@ def sf_put(path='', token=None, data=None):
     """
     return requests.put(URL_SF_API + path, headers=headers(token), json=data)
 
+def sf_delete(path='', token=None, data=None):
+    """
+    Sends a PUTS to PetSafe SmartFeed API.
+
+    Example: sf_put(path='feeders', token=user_token, data=my_data)
+
+    :param path: the path on the API
+    :param token: the account's token
+    :param data: the PUT data
+    :return: the request response
+
+    """
+    return requests.delete(URL_SF_API + path, headers=headers(token), json=data)
+
 
 def sf_user_post(path='', token=None, data=None):
     """
