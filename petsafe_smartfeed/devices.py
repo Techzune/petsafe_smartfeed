@@ -123,7 +123,7 @@ class DeviceSmartFeed:
         """
         Adds time and feed amount to schedule.
         
-        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:00
+        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
         :param amount: the amount to feed in 1/8 increments.
         :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
 
