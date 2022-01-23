@@ -133,8 +133,24 @@ class DeviceSmartFeed:
             'amount': amount
         })
         response.raise_for_status()
+        
+    def modify_schedule(self, time="00:00", amount=1, schedule_id="", update_data=True):
+        """
+        Modifies the specified schedule.
+        
+        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
+        :param amount: the amount to feed in 1/8 increments.
+        :param schedule_id: the id of the scheduled feed to delete (six digits as of writing)
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
 
-    def delete_schedule(self, schedule_id, update_data=True):
+        """
+        response = api.sf_put(self.api_path + 'schedules/' + schedule_id, self.token, data={
+            'time': time,
+            'amount': amount
+        })
+        response.raise_for_status()
+
+    def delete_schedule(self, schedule_id="", update_data=True):
         """
         Deletes specified schedule.
         
