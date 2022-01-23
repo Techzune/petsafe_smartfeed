@@ -134,7 +134,18 @@ class DeviceSmartFeed:
         })
         response.raise_for_status()
 
-    def delete_schedules(self, update_data=True):
+    def delete_schedule(self, schedule_id, update_data=True):
+        """
+        Deletes specified schedule.
+        
+        :param schedule_id: the id of the scheduled feed to delete (six digits as of writing)
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+
+        """
+        response = api.sf_delete(self.api_path + 'schedules/' + schedule_id, self.token)
+        response.raise_for_status()
+    
+    def delete_all_schedules(self, update_data=True):
         """
         Deletes all schedules.
         
@@ -142,8 +153,8 @@ class DeviceSmartFeed:
 
         """
         response = api.sf_delete(self.api_path + 'schedules', self.token)
-        response.raise_for_status()
-
+        response.raise_for_status()        
+        
     @property
     def api_name(self):
         """The feeder's thing_name from the API."""
