@@ -119,6 +119,31 @@ class DeviceSmartFeed:
         """
         self.feed(5, False)
 
+    def schedule_feed(self, time="00:00", amount=1, update_data=True):
+        """
+        Adds time and feed amount to schedule.
+        
+        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:00
+        :param amount: the amount to feed in 1/8 increments.
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+
+        """
+        response = api.sf_post(self.api_path + 'schedules', self.token, data={
+            'time': time,
+            'amount': amount
+        })
+        response.raise_for_status()
+
+    def delete_schedules(self, update_data=True):
+        """
+        Deletes all schedules.
+        
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+
+        """
+        response = api.sf_delete(self.api_path + 'schedules', self.token)
+        response.raise_for_status()
+
     @property
     def api_name(self):
         """The feeder's thing_name from the API."""
