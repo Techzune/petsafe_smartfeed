@@ -184,6 +184,18 @@ class DeviceSmartFeed:
         response = api.sf_delete(self.api_path + 'schedules', self.token)
         response.raise_for_status()
 
+    def pause_schedules(self, value, update_data=True):
+        """
+        Pauses all schedules.
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+
+        """
+        response = api.sf_put(self.api_path + 'settings/paused', token=self.token, data={
+            'value': value
+        })
+        response.raise_for_status()
+
+
     @property
     def api_name(self):
         """The feeder's thing_name from the API."""
