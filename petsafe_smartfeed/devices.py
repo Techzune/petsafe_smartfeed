@@ -119,6 +119,84 @@ class DeviceSmartFeed:
         """
         self.feed(5, False)
 
+    def get_schedules(self):
+        """
+        Requests all feeding schedules.
+
+        :return: the APIs response in JSON.
+
+        """
+        response = api.sf_get(self.api_path + 'schedules', token=self.token)
+        response.raise_for_status()
+        return json.loads(response.content.decode('UTF-8'))
+
+    def schedule_feed(self, time="00:00", amount=1, update_data=True):
+        """
+        Adds time and feed amount to schedule.
+
+        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
+        :param amount: the amount to feed in 1/8 increments.
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+        :return: the unique id of the scheduled feed in json
+
+        """
+        response = api.sf_post(self.api_path + 'schedules', self.token, data={
+            'time': time,
+            'amount': amount
+        })
+        response.raise_for_status()
+        return json.loads(response.content.decode('UTF-8'))
+
+    def modify_schedule(self, time="00:00", amount=1, schedule_id="", update_data=True):
+        """
+        Modifies the specified schedule.
+
+        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
+        :param amount: the amount to feed in 1/8 increments.
+        :param schedule_id: the id of the scheduled feed to delete (six digits as of writing)
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+
+        """
+        response = api.sf_put(self.api_path + 'schedules/' + schedule_id, self.token, data={
+            'time': time,
+            'amount': amount
+        })
+        response.raise_for_status()
+
+    def delete_schedule(self, schedule_id="", update_data=True):
+        """
+        Deletes specified schedule.
+
+        :param schedule_id: the id of the scheduled feed to delete (six digits as of writing)
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+
+        """
+        response = api.sf_delete(self.api_path + 'schedules/' + schedule_id, self.token)
+        response.raise_for_status()
+
+    def delete_all_schedules(self, update_data=True):
+        """
+        Deletes all schedules.
+
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+
+        """
+        response = api.sf_delete(self.api_path + 'schedules', self.token)
+        response.raise_for_status()
+
+    def pause_schedules(self, value, update_data=True):
+        """
+        Pauses all schedules.
+
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+
+        """
+        response = api.sf_put(self.api_path + 'settings/paused', token=self.token, data={
+            'value': value
+        })
+        response.raise_for_status()
+
+
     @property
     def api_name(self):
         """The feeder's thing_name from the API."""

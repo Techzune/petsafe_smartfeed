@@ -14,9 +14,9 @@ def headers(token=None):
     :return: dictionary of headers
 
     """
-    data = {'content-type': 'application/json'}
+    data = {'Content-Type': 'application/json'}
     if token:
-        data['token'] = token
+        data['Token'] = token
     return data
 
 
