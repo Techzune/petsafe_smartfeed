@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='petsafe_smartfeed',
-    version='1.2',
+    version='1.3',
     author='Jordan Stremming',
     license='MIT',
     author_email='jcstremming@gmail.com',
