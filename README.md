@@ -20,18 +20,21 @@ There are two methods to retrieve tokens:
 
 #### Get tokens using Python
 ```python
-from petsafe_smartfeed.client import PetSafeClient
+import petsafe_smartfeed as sf
 
 
 # replace with your email address
-client = PetSafeClient(email="email@example.com")
+client = sf.PetSafeClient(email="email@example.com")
 client.request_code()
 
 # check your email for a code
 code = input("Enter email code: ")
 token = client.request_tokens_from_code(code)
 
-print(token)
+print("email:", client.email)
+print("id_token:", client.id_token)
+print("refresh_token:", client.refresh_token)
+print("access_token:", client.access_token)
 ```
 
 
