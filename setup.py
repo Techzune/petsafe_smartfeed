@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='petsafe_smartfeed',
-    version='1.3',
+    version='2.0',
     author='Jordan Stremming',
     license='MIT',
     author_email='jcstremming@gmail.com',
@@ -15,7 +15,8 @@ setuptools.setup(
     url='https://github.com/techzune/petsafe_smartfeed',
     packages=setuptools.find_packages(),
     install_requires=[
-        'requests'
+        'requests',
+        'boto3'
     ],
     classifiers=[
         'Programming Language :: Python :: 3',

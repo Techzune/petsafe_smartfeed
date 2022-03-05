@@ -1,1 +1,2 @@
-from . import api, devices
+from . import devices
+from .client import PetSafeClient
