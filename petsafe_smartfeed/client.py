@@ -5,19 +5,15 @@ import requests
 
 import boto3
 
-URL_SF_API = 'https://platform.cloud.petsafe.net/smart-feed/'
-PETSAFE_CLIENT_ID = '18hpp04puqmgf5nc6o474lcp2g'
-PETSAFE_REGION = 'us-east-1'
+URL_SF_API = "https://platform.cloud.petsafe.net/smart-feed/"
+PETSAFE_CLIENT_ID = "18hpp04puqmgf5nc6o474lcp2g"
+PETSAFE_REGION = "us-east-1"
 
 
 class PetSafeClient:
-
-    def __init__(self,
-                 email,
-                 id_token=None,
-                 refresh_token=None,
-                 access_token=None,
-                 session=None):
+    def __init__(
+        self, email, id_token=None, refresh_token=None, access_token=None, session=None
+    ):
         self.id_token = id_token
         self.refresh_token = refresh_token
         self.access_token = access_token
@@ -26,7 +22,7 @@ class PetSafeClient:
         self.username = None
         self.token_expires_time = None
         self.challenge_name = None
-        self.client = boto3.client('cognito-idp', region_name=PETSAFE_REGION)
+        self.client = boto3.client("cognito-idp", region_name=PETSAFE_REGION)
 
     def request_code(self):
         """
@@ -35,16 +31,13 @@ class PetSafeClient:
         :return: response from PetSafe
         """
         response = self.client.initiate_auth(
-            AuthFlow='CUSTOM_AUTH',
+            AuthFlow="CUSTOM_AUTH",
             ClientId=PETSAFE_CLIENT_ID,
-            AuthParameters={
-                'USERNAME': self.email,
-                'AuthFlow': 'CUSTOM_CHALLENGE'
-            }
+            AuthParameters={"USERNAME": self.email, "AuthFlow": "CUSTOM_CHALLENGE"},
         )
-        self.challenge_name = response['ChallengeName']
-        self.session = response['Session']
-        self.username = response['ChallengeParameters']['USERNAME']
+        self.challenge_name = response["ChallengeName"]
+        self.session = response["Session"]
+        self.username = response["ChallengeParameters"]["USERNAME"]
         return response
 
     def request_tokens_from_code(self, code):
@@ -59,14 +52,16 @@ class PetSafeClient:
             ChallengeName=self.challenge_name,
             Session=self.session,
             ChallengeResponses={
-                'ANSWER': re.sub(r'\D', '', code),
-                'USERNAME': self.username
-            }
+                "ANSWER": re.sub(r"\D", "", code),
+                "USERNAME": self.username,
+            },
         )
-        self.id_token = response['AuthenticationResult']['IdToken']
-        self.access_token = response['AuthenticationResult']['AccessToken']
-        self.refresh_token = response['AuthenticationResult']['RefreshToken']
-        self.token_expires_time = time.time() + response['AuthenticationResult']['ExpiresIn']
+        self.id_token = response["AuthenticationResult"]["IdToken"]
+        self.access_token = response["AuthenticationResult"]["AccessToken"]
+        self.refresh_token = response["AuthenticationResult"]["RefreshToken"]
+        self.token_expires_time = (
+            time.time() + response["AuthenticationResult"]["ExpiresIn"]
+        )
         return response
 
     def refresh_tokens(self):
@@ -76,20 +71,20 @@ class PetSafeClient:
         :return: the response from PetSafe.
         """
         response = self.client.initiate_auth(
-            AuthFlow='REFRESH_TOKEN_AUTH',
-            AuthParameters={
-                'REFRESH_TOKEN': self.refresh_token
-            },
-            ClientId=PETSAFE_CLIENT_ID
+            AuthFlow="REFRESH_TOKEN_AUTH",
+            AuthParameters={"REFRESH_TOKEN": self.refresh_token},
+            ClientId=PETSAFE_CLIENT_ID,
         )
 
-        if 'Session' in response:
-            self.session = response['Session']
+        if "Session" in response:
+            self.session = response["Session"]
 
-        self.id_token = response['AuthenticationResult']['IdToken']
-        self.access_token = response['AuthenticationResult']['AccessToken']
-        self.refresh_token = response['AuthenticationResult']['RefreshToken']
-        self.token_expires_time = time.time() + response['AuthenticationResult']['ExpiresIn']
+        self.id_token = response["AuthenticationResult"]["IdToken"]
+        self.access_token = response["AuthenticationResult"]["AccessToken"]
+        self.refresh_token = response["AuthenticationResult"]["RefreshToken"]
+        self.token_expires_time = (
+            time.time() + response["AuthenticationResult"]["ExpiresIn"]
+        )
         return response
 
     def get_headers(self):
@@ -98,19 +93,19 @@ class PetSafeClient:
         :return: dictionary of headers
 
         """
-        headers = {'Content-Type': 'application/json'}
+        headers = {"Content-Type": "application/json"}
 
         if self.id_token is None:
-            raise Exception('Not authorized! Have you requested a token?')
+            raise Exception("Not authorized! Have you requested a token?")
 
         if time.time() >= self.token_expires_time - 10:
             self.refresh_tokens()
 
-        headers['Authorization'] = self.id_token
+        headers["Authorization"] = self.id_token
 
         return headers
 
-    def sf_post(self, path='', data=None):
+    def sf_post(self, path="", data=None):
         """
         Sends a POST to PetSafe SmartFeed API.
 
@@ -123,7 +118,7 @@ class PetSafeClient:
         """
         return requests.post(URL_SF_API + path, headers=self.get_headers(), json=data)
 
-    def sf_get(self, path=''):
+    def sf_get(self, path=""):
         """
         Sends a GET to PetSafe SmartFeed API.
 
@@ -135,7 +130,7 @@ class PetSafeClient:
         """
         return requests.get(URL_SF_API + path, headers=self.get_headers())
 
-    def sf_put(self, path='', data=None):
+    def sf_put(self, path="", data=None):
         """
         Sends a PUTS to PetSafe SmartFeed API.
 

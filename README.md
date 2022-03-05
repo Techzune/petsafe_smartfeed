@@ -24,11 +24,11 @@ from petsafe_smartfeed.client import PetSafeClient
 
 
 # replace with your email address
-client = PetSafeClient(email='email@example.com')
+client = PetSafeClient(email="email@example.com")
 client.request_code()
 
 # check your email for a code
-code = input('Enter email code: ')
+code = input("Enter email code: ")
 token = client.request_tokens_from_code(code)
 
 print(token)
@@ -41,10 +41,10 @@ print(token)
 ```python
 import petsafe_smartfeed as sf
 
-client = sf.PetSafeClient(email='email@example.com',
-                       id_token='YOUR_ID_TOKEN',
-                       refresh_token='YOUR_REFRESH_TOKEN',
-                       access_token='YOUR_ACCESS_TOKEN')
+client = sf.PetSafeClient(email="email@example.com",
+                       id_token="YOUR_ID_TOKEN",
+                       refresh_token="YOUR_REFRESH_TOKEN",
+                       access_token="YOUR_ACCESS_TOKEN")
 devices = sf.devices.get_feeders(client)
 
 # print all feeders
@@ -56,10 +56,10 @@ for device in devices:
 ```python
 import petsafe_smartfeed as sf
 
-client = sf.PetSafeClient(email='email@example.com',
-                       id_token='YOUR_ID_TOKEN',
-                       refresh_token='YOUR_REFRESH_TOKEN',
-                       access_token='YOUR_ACCESS_TOKEN')
+client = sf.PetSafeClient(email="email@example.com",
+                       id_token="YOUR_ID_TOKEN",
+                       refresh_token="YOUR_REFRESH_TOKEN",
+                       access_token="YOUR_ACCESS_TOKEN")
 devices = sf.devices.get_feeders(client)
 
 # get the first feeder
@@ -71,10 +71,10 @@ feeder.feed(amount=1, slow_feed=False)
 ```python
 import petsafe_smartfeed as sf
 
-client = sf.PetSafeClient(email='email@example.com',
-                       id_token='YOUR_ID_TOKEN',
-                       refresh_token='YOUR_REFRESH_TOKEN',
-                       access_token='YOUR_ACCESS_TOKEN')
+client = sf.PetSafeClient(email="email@example.com",
+                       id_token="YOUR_ID_TOKEN",
+                       refresh_token="YOUR_REFRESH_TOKEN",
+                       access_token="YOUR_ACCESS_TOKEN")
 devices = sf.devices.get_feeders(client)
 
 # get the first feeder
@@ -86,10 +86,10 @@ print(feeder.battery_level)
 ```python
 import petsafe_smartfeed as sf
 
-client = sf.PetSafeClient(email='email@example.com',
-                       id_token='YOUR_ID_TOKEN',
-                       refresh_token='YOUR_REFRESH_TOKEN',
-                       access_token='YOUR_ACCESS_TOKEN')
+client = sf.PetSafeClient(email="email@example.com",
+                       id_token="YOUR_ID_TOKEN",
+                       refresh_token="YOUR_REFRESH_TOKEN",
+                       access_token="YOUR_ACCESS_TOKEN")
 devices = sf.devices.get_feeders(client)
 
 # get the first feeder
@@ -97,11 +97,11 @@ feeder = devices[0]
 status = feeder.food_low_status
 
 if status == 0:
-    print('Feeder has food.')
+    print("Feeder has food.")
 elif status == 1:
-    print('Feeder is low on food.')
+    print("Feeder is low on food.")
 elif status == 2:
-    print('Feeder is out of food.')
+    print("Feeder is out of food.")
 
 ```
 
