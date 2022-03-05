@@ -7,6 +7,9 @@ Connect and control a PetSafe Smart Feed device using the PetSafe-SmartFeed API.
 > PetSafe will lock your account if you request data more often than once per 5 minutes.
 
 ## Installation
+`pip install petsafe-smartfeed`
+
+If installing from source code,
 `python setup.py install`
 
 ## Login tokens
