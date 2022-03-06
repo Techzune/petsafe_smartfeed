@@ -1,9 +1,8 @@
-import json
 import re
 import time
-import requests
 
 import boto3
+import requests
 
 URL_SF_API = "https://platform.cloud.petsafe.net/smart-feed/"
 PETSAFE_CLIENT_ID = "18hpp04puqmgf5nc6o474lcp2g"
@@ -24,11 +23,32 @@ class PetSafeClient:
         self.challenge_name = None
         self.client = boto3.client("cognito-idp", region_name=PETSAFE_REGION)
 
+    @property
+    def headers(self):
+        """
+        Creates a dict of headers with JSON content-type and token.
+
+        :return: dictionary of headers
+
+        """
+        headers = {"Content-Type": "application/json"}
+
+        if self.id_token is None:
+            raise Exception("Not authorized! Have you requested a token?")
+
+        if time.time() >= self.token_expires_time - 10:
+            self.refresh_tokens()
+
+        headers["Authorization"] = self.id_token
+
+        return headers
+
     def request_code(self):
         """
         Requests an email code from PetSafe authentication.
 
         :return: response from PetSafe
+
         """
         response = self.client.initiate_auth(
             AuthFlow="CUSTOM_AUTH",
@@ -46,6 +66,7 @@ class PetSafeClient:
 
         :param code: email code
         :return: response from PetSafe
+
         """
         response = self.client.respond_to_auth_challenge(
             ClientId=PETSAFE_CLIENT_ID,
@@ -60,7 +81,7 @@ class PetSafeClient:
         self.access_token = response["AuthenticationResult"]["AccessToken"]
         self.refresh_token = response["AuthenticationResult"]["RefreshToken"]
         self.token_expires_time = (
-            time.time() + response["AuthenticationResult"]["ExpiresIn"]
+                time.time() + response["AuthenticationResult"]["ExpiresIn"]
         )
         return response
 
@@ -69,6 +90,7 @@ class PetSafeClient:
         Refreshes tokens with PetSafe.
 
         :return: the response from PetSafe.
+
         """
         response = self.client.initiate_auth(
             AuthFlow="REFRESH_TOKEN_AUTH",
@@ -83,62 +105,44 @@ class PetSafeClient:
         self.access_token = response["AuthenticationResult"]["AccessToken"]
         self.refresh_token = response["AuthenticationResult"]["RefreshToken"]
         self.token_expires_time = (
-            time.time() + response["AuthenticationResult"]["ExpiresIn"]
+                time.time() + response["AuthenticationResult"]["ExpiresIn"]
         )
         return response
 
-    def get_headers(self):
-        """
-        Creates a dict of headers with JSON content-type and token.
-        :return: dictionary of headers
-
-        """
-        headers = {"Content-Type": "application/json"}
-
-        if self.id_token is None:
-            raise Exception("Not authorized! Have you requested a token?")
-
-        if time.time() >= self.token_expires_time - 10:
-            self.refresh_tokens()
-
-        headers["Authorization"] = self.id_token
-
-        return headers
-
-    def sf_post(self, path="", data=None):
+    def api_post(self, path="", data=None):
         """
         Sends a POST to PetSafe SmartFeed API.
 
-        Example: sf_post(path=feeder.api_path + 'meals', data=food_data)
+        Example: api_post(path=feeder.api_path + 'meals', data=food_data)
 
         :param path: the path on the API
         :param data: the POST data
         :return: the request response
 
         """
-        return requests.post(URL_SF_API + path, headers=self.get_headers(), json=data)
+        return requests.post(URL_SF_API + path, headers=self.headers, json=data)
 
-    def sf_get(self, path=""):
+    def api_get(self, path=""):
         """
         Sends a GET to PetSafe SmartFeed API.
 
-        Example: sf_get(path='feeders')
+        Example: api_get(path='feeders')
 
         :param path: the path on the API
         :return: the request response
 
         """
-        return requests.get(URL_SF_API + path, headers=self.get_headers())
+        return requests.get(URL_SF_API + path, headers=self.headers)
 
-    def sf_put(self, path="", data=None):
+    def api_put(self, path="", data=None):
         """
-        Sends a PUTS to PetSafe SmartFeed API.
+        Sends a PUT to PetSafe SmartFeed API.
 
-        Example: sf_put(path='feeders', data=my_data)
+        Example: api_put(path='feeders', data=my_data)
 
         :param path: the path on the API
         :param data: the PUT data
         :return: the request response
 
         """
-        return requests.put(URL_SF_API + path, headers=self.get_headers(), json=data)
+        return requests.put(URL_SF_API + path, headers=self.headers, json=data)

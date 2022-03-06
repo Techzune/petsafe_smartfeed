@@ -9,7 +9,7 @@ def get_feeders(client):
     :return: list of Feeders
 
     """
-    response = client.sf_get("feeders")
+    response = client.api_get("feeders")
     response.raise_for_status()
     content = response.content.decode("UTF-8")
     return [DeviceSmartFeed(client, feeder_data) for feeder_data in json.loads(content)]
@@ -41,7 +41,7 @@ class DeviceSmartFeed:
         Updates self.data to the feeder's current online state.
 
         """
-        response = self.client.sf_get(self.api_path)
+        response = self.client.api_get(self.api_path)
         response.raise_for_status()
         self.data = json.loads(response.content.decode("UTF-8"))
 
@@ -54,7 +54,7 @@ class DeviceSmartFeed:
         :param force_update: if True, update ALL data after PUT. Defaults to False.
 
         """
-        response = self.client.sf_put(
+        response = self.client.api_put(
             self.api_path + "settings/" + setting, data={"value": value}
         )
         response.raise_for_status()
@@ -72,7 +72,7 @@ class DeviceSmartFeed:
         :return: the APIs response in JSON.
 
         """
-        response = self.client.sf_get(self.api_path + "messages?days=" + str(days))
+        response = self.client.api_get(self.api_path + "messages?days=" + str(days))
         response.raise_for_status()
         return json.loads(response.content.decode("UTF-8"))
 
@@ -100,7 +100,7 @@ class DeviceSmartFeed:
         """
         if slow_feed is None:
             slow_feed = self.data["settings"]["slow_feed"]
-        response = self.client.sf_post(
+        response = self.client.api_post(
             self.api_path + "meals", data={"amount": amount, "slow_feed": slow_feed}
         )
         response.raise_for_status()
@@ -130,7 +130,7 @@ class DeviceSmartFeed:
         :return: the APIs response in JSON.
 
         """
-        response = self.client.sf_get(self.api_path + "schedules")
+        response = self.client.api_get(self.api_path + "schedules")
         response.raise_for_status()
         return json.loads(response.content.decode("UTF-8"))
 
@@ -144,7 +144,7 @@ class DeviceSmartFeed:
         :return: the unique id of the scheduled feed in json
 
         """
-        response = self.client.sf_post(
+        response = self.client.api_post(
             self.api_path + "schedules", data={"time": time, "amount": amount}
         )
         response.raise_for_status()
@@ -164,7 +164,7 @@ class DeviceSmartFeed:
         :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
 
         """
-        response = self.client.sf_put(
+        response = self.client.api_put(
             self.api_path + "schedules/" + schedule_id,
             data={"time": time, "amount": amount},
         )
@@ -209,7 +209,7 @@ class DeviceSmartFeed:
         :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
 
         """
-        response = self.client.sf_put(
+        response = self.client.api_put(
             self.api_path + "settings/paused", data={"value": value}
         )
         response.raise_for_status()
