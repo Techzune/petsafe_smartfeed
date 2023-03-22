@@ -10,9 +10,7 @@ PETSAFE_REGION = "us-east-1"
 
 
 class PetSafeClient:
-    def __init__(
-        self, email, id_token=None, refresh_token=None, access_token=None, session=None
-    ):
+    def __init__(self, email, id_token=None, refresh_token=None, access_token=None, session=None):
         self.id_token = id_token
         self.refresh_token = refresh_token
         self.access_token = access_token
@@ -53,7 +51,10 @@ class PetSafeClient:
         response = self.client.initiate_auth(
             AuthFlow="CUSTOM_AUTH",
             ClientId=PETSAFE_CLIENT_ID,
-            AuthParameters={"USERNAME": self.email, "AuthFlow": "CUSTOM_CHALLENGE"},
+            AuthParameters={
+                "USERNAME": self.email,
+                "AuthFlow": "CUSTOM_CHALLENGE",
+            },
         )
         self.challenge_name = response["ChallengeName"]
         self.session = response["Session"]
@@ -80,9 +81,7 @@ class PetSafeClient:
         self.id_token = response["AuthenticationResult"]["IdToken"]
         self.access_token = response["AuthenticationResult"]["AccessToken"]
         self.refresh_token = response["AuthenticationResult"]["RefreshToken"]
-        self.token_expires_time = (
-                time.time() + response["AuthenticationResult"]["ExpiresIn"]
-        )
+        self.token_expires_time = time.time() + response["AuthenticationResult"]["ExpiresIn"]
         return response
 
     def refresh_tokens(self):
@@ -104,9 +103,7 @@ class PetSafeClient:
         self.id_token = response["AuthenticationResult"]["IdToken"]
         self.access_token = response["AuthenticationResult"]["AccessToken"]
         self.refresh_token = response["AuthenticationResult"]["RefreshToken"]
-        self.token_expires_time = (
-                time.time() + response["AuthenticationResult"]["ExpiresIn"]
-        )
+        self.token_expires_time = time.time() + response["AuthenticationResult"]["ExpiresIn"]
         return response
 
     def api_post(self, path="", data=None):

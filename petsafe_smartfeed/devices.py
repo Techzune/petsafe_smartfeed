@@ -55,7 +55,10 @@ class DeviceSmartFeed:
 
         """
         response = self.client.api_put(
-            self.api_path + "settings/" + setting, data={"value": value}
+            self.api_path + "settings/" + setting,
+            data={
+                "value": value,
+            },
         )
         response.raise_for_status()
 
@@ -100,8 +103,13 @@ class DeviceSmartFeed:
         """
         if slow_feed is None:
             slow_feed = self.data["settings"]["slow_feed"]
+
         response = self.client.api_post(
-            self.api_path + "meals", data={"amount": amount, "slow_feed": slow_feed}
+            self.api_path + "meals",
+            data={
+                "amount": amount,
+                "slow_feed": slow_feed,
+            },
         )
         response.raise_for_status()
 
@@ -145,7 +153,11 @@ class DeviceSmartFeed:
 
         """
         response = self.client.api_post(
-            self.api_path + "schedules", data={"time": time, "amount": amount}
+            self.api_path + "schedules",
+            data={
+                "time": time,
+                "amount": amount,
+            },
         )
         response.raise_for_status()
 
@@ -166,7 +178,10 @@ class DeviceSmartFeed:
         """
         response = self.client.api_put(
             self.api_path + "schedules/" + schedule_id,
-            data={"time": time, "amount": amount},
+            data={
+                "time": time,
+                "amount": amount,
+            },
         )
         response.raise_for_status()
 
@@ -181,9 +196,7 @@ class DeviceSmartFeed:
         :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
 
         """
-        response = self.client.sf_delete(
-            self.api_path + "schedules/" + schedule_id, self.client
-        )
+        response = self.client.sf_delete(self.api_path + "schedules/" + schedule_id, self.client)
         response.raise_for_status()
 
         if update_data:
@@ -210,7 +223,10 @@ class DeviceSmartFeed:
 
         """
         response = self.client.api_put(
-            self.api_path + "settings/paused", data={"value": value}
+            self.api_path + "settings/paused",
+            data={
+                "value": value,
+            },
         )
         response.raise_for_status()
 
@@ -253,8 +269,7 @@ class DeviceSmartFeed:
         maxVoltage = 29100
         return round(
             max(
-                (100 * (int(self.data["battery_voltage"]) - minVoltage))
-                / (maxVoltage - minVoltage),
+                (100 * (int(self.data["battery_voltage"]) - minVoltage)) / (maxVoltage - minVoltage),
                 0,
             )
         )
