@@ -196,7 +196,7 @@ class DeviceSmartFeed:
         :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
 
         """
-        response = self.client.sf_delete(self.api_path + "schedules/" + schedule_id, self.client)
+        response = self.client.api_delete(self.api_path + "schedules/" + schedule_id)
         response.raise_for_status()
 
         if update_data:
@@ -209,7 +209,7 @@ class DeviceSmartFeed:
         :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
 
         """
-        response = self.client.sf_delete(self.api_path + "schedules", self.client)
+        response = self.client.api_delete(self.api_path + "schedules")
         response.raise_for_status()
 
         if update_data:

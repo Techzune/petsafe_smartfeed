@@ -143,3 +143,15 @@ class PetSafeClient:
 
         """
         return requests.put(URL_SF_API + path, headers=self.headers, json=data)
+
+    def api_delete(self, path=""):
+        """
+        Sends a DELETE to PetSafe SmartFeed API.
+
+        Example: api_delete(path=feeder.api_path + 'schedules')
+
+        :param path: the path on the API
+        :return: the request response
+
+        """
+        return requests.delete(URL_SF_API + path, headers=self.headers)
