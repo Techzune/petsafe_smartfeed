@@ -42,7 +42,7 @@ print("access_token:", client.access_token)
 
 
 ## Example usage
-#### List devices
+#### List feeders
 
 ```python
 import petsafe_smartfeed as sf
@@ -51,11 +51,11 @@ client = sf.PetSafeClient(email="email@example.com",
                        id_token="YOUR_ID_TOKEN",
                        refresh_token="YOUR_REFRESH_TOKEN",
                        access_token="YOUR_ACCESS_TOKEN")
-devices = sf.devices.get_feeders(client)
+feeders = client.feeders
 
 # print all feeders
-for device in devices:
-    print(device)
+for feeder in feeders:
+    print(feeder)
 
 ```
 #### Feed 1/8 cup at normal speed
@@ -66,10 +66,10 @@ client = sf.PetSafeClient(email="email@example.com",
                        id_token="YOUR_ID_TOKEN",
                        refresh_token="YOUR_REFRESH_TOKEN",
                        access_token="YOUR_ACCESS_TOKEN")
-devices = sf.devices.get_feeders(client)
+feeders = client.feeders
 
 # get the first feeder
-feeder = devices[0]
+feeder = feeders[0]
 feeder.feed(amount=1, slow_feed=False)
 
 ```
@@ -81,10 +81,10 @@ client = sf.PetSafeClient(email="email@example.com",
                        id_token="YOUR_ID_TOKEN",
                        refresh_token="YOUR_REFRESH_TOKEN",
                        access_token="YOUR_ACCESS_TOKEN")
-devices = sf.devices.get_feeders(client)
+feeders = client.feeders
 
 # get the first feeder
-feeder = devices[0]
+feeder = feeders[0]
 print(feeder.battery_level)
 
 ```
@@ -96,10 +96,10 @@ client = sf.PetSafeClient(email="email@example.com",
                        id_token="YOUR_ID_TOKEN",
                        refresh_token="YOUR_REFRESH_TOKEN",
                        access_token="YOUR_ACCESS_TOKEN")
-devices = sf.devices.get_feeders(client)
+feeders = client.feeders
 
 # get the first feeder
-feeder = devices[0]
+feeder = feeders[0]
 status = feeder.food_low_status
 
 if status == 0:
