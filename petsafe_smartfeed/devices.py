@@ -33,9 +33,10 @@ class DeviceSmartFeed:
         self.data = data
 
     def __str__(self):
-        return self.to_json()
+        return self.json
 
-    def to_json(self):
+    @property
+    def json(self):
         """
         All feeder data formatted as JSON.
 
