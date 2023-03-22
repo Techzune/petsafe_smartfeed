@@ -11,7 +11,7 @@ def get_feeders(client):
 
     """
     warn(
-        "`get_feeders` will be deprecated in a future version. Use client.feeders instead.",
+        "`get_feeders` will be removed in the next version. Use `client.feeders` instead.",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -161,7 +161,7 @@ class DeviceSmartFeed:
 
         """
         warn(
-            "schedule_feed will be replaced with add_schedule in the next version.",
+            "`schedule_feed` will be remvoved in the next version. Use `add_schedule` instead.",
             DeprecationWarning,
             stacklevel=2,
         )
