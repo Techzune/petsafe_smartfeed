@@ -1,3 +1,4 @@
+import json
 import re
 import time
 
@@ -12,7 +13,31 @@ PETSAFE_REGION = "us-east-1"
 
 
 class PetSafeClient:
-    def __init__(self, email, id_token=None, refresh_token=None, access_token=None, session=None):
+    def __init__(
+        self,
+        email,
+        id_token=None,
+        refresh_token=None,
+        access_token=None,
+        session=None,
+    ):
+        """
+        Provides a client to PetSafe API.
+
+        Parameters
+        ----------
+        email : str
+            Email address to authorize with PetSafe
+        id_token : str, optional
+            Authorization ID token provided by PetSafe
+        refresh_token : str, optional
+            Authorization refresh token provided by PetSafe
+        access_token : str, optional
+            Authorization access token provided by PetSafe
+        session : str, optional
+            Authorization session provided by PetSafe
+
+        """
         self.id_token = id_token
         self.refresh_token = refresh_token
         self.access_token = access_token
@@ -26,9 +51,11 @@ class PetSafeClient:
     @property
     def headers(self):
         """
-        Creates a dict of headers with JSON content-type and token.
+        Client request headers with content-type JSON and authorization token.
 
-        :return: dictionary of headers
+        Returns
+        -------
+        dict
 
         """
         headers = {"Content-Type": "application/json"}
@@ -46,6 +73,14 @@ class PetSafeClient:
     @property
     def feeders(self):
         """
+        All feeders attached to the PetSafe account.
+
+        Returns
+        -------
+        list of DeviceSmartFeed
+
+        """
+        """
         Sends a request to PetSafe's API for all feeders associated with account.
 
         :return: list of Feeders
@@ -62,7 +97,10 @@ class PetSafeClient:
         """
         Requests an email code from PetSafe authentication.
 
-        :return: response from PetSafe
+        Returns
+        -------
+        dict
+            Authentication response from PetSafe
 
         """
         response = self.client.initiate_auth(
@@ -80,10 +118,18 @@ class PetSafeClient:
 
     def request_tokens_from_code(self, code):
         """
-        Requests tokens from PetSafe API using emailed code.
+        Requests authentication tokens from PetSafe using emailed code from
+        `request_code`.
 
-        :param code: email code
-        :return: response from PetSafe
+        Parameters
+        ----------
+        code : str
+            Code provided by PetSafe via email
+
+        Returns
+        -------
+        dict
+            Authentication response from PetSafe
 
         """
         response = self.client.respond_to_auth_challenge(
@@ -98,16 +144,30 @@ class PetSafeClient:
         self.id_token = response["AuthenticationResult"]["IdToken"]
         self.access_token = response["AuthenticationResult"]["AccessToken"]
         self.refresh_token = response["AuthenticationResult"]["RefreshToken"]
-        self.token_expires_time = time.time() + response["AuthenticationResult"]["ExpiresIn"]
+        self.token_expires_time = (
+            time.time() + response["AuthenticationResult"]["ExpiresIn"]
+        )
         return response
 
-    def refresh_tokens(self):
+    def refresh_tokens(self, refresh_token=None):
         """
-        Refreshes tokens with PetSafe.
+        Requests new authorization tokens from PetSafe using the client's or a
+        provided refresh token.
 
-        :return: the response from PetSafe.
+        Parameters
+        ----------
+        refresh_token : str, optional
+            Authorization refresh token provided by PetSafe
+
+        Returns
+        -------
+        dict
+            Authorization response from PetSafe
 
         """
+        if refresh_token is not None:
+            self.refresh_token = refresh_token
+
         response = self.client.initiate_auth(
             AuthFlow="REFRESH_TOKEN_AUTH",
             AuthParameters={"REFRESH_TOKEN": self.refresh_token},
@@ -120,55 +180,111 @@ class PetSafeClient:
         self.id_token = response["AuthenticationResult"]["IdToken"]
         self.access_token = response["AuthenticationResult"]["AccessToken"]
         self.refresh_token = response["AuthenticationResult"]["RefreshToken"]
-        self.token_expires_time = time.time() + response["AuthenticationResult"]["ExpiresIn"]
+        self.token_expires_time = (
+            time.time() + response["AuthenticationResult"]["ExpiresIn"]
+        )
         return response
 
     def api_post(self, path="", data=None):
         """
-        Sends a POST to PetSafe SmartFeed API.
+        Sends a POST request to PetSafe.
 
-        Example: api_post(path=feeder.api_path + 'meals', data=food_data)
+        Parameters
+        ----------
+        path : str
+            URL path on the API (it is prepended by the API URL)
+        data
+            JSON data to send on the request
 
-        :param path: the path on the API
-        :param data: the POST data
-        :return: the request response
+        Returns
+        -------
+        Response
+            Response received from PetSafe
+
+        Examples
+        --------
+        >>> client = PetSafeClient("example@email.com", refresh_token="XXXX")
+        >>> feeder = client.feeders[0]
+        >>> response = client.api_post(path=feeder.api_path + "meals", data={
+        ...     "amount": 1,  # feed 1/8th
+        ...     "slow_feed": False
+        ... })
 
         """
         return requests.post(URL_SF_API + path, headers=self.headers, json=data)
 
     def api_get(self, path=""):
         """
-        Sends a GET to PetSafe SmartFeed API.
+        Sends a GET request to PetSafe.
 
-        Example: api_get(path='feeders')
+        Parameters
+        ----------
+        path : str
+            URL path on the API (it is prepended by the API URL)
 
-        :param path: the path on the API
-        :return: the request response
+        Returns
+        -------
+        Response
+            Response received from PetSafe
+
+        Examples
+        --------
+        >>> client = PetSafeClient("example@email.com", refresh_token="XXXX")
+        >>> feeders_raw = client.api_get(path="feeders")
 
         """
         return requests.get(URL_SF_API + path, headers=self.headers)
 
     def api_put(self, path="", data=None):
         """
-        Sends a PUT to PetSafe SmartFeed API.
+        Sends a PUT request to PetSafe.
 
-        Example: api_put(path='feeders', data=my_data)
+        Parameters
+        ----------
+        path : str
+            URL path on the API (it is prepended by the API URL)
+        data
+            JSON data to send on the request
 
-        :param path: the path on the API
-        :param data: the PUT data
-        :return: the request response
+        Returns
+        -------
+        Response
+            Response received from PetSafe
+
+        Examples
+        --------
+        >>> client = PetSafeClient("example@email.com", refresh_token="XXXX")
+        >>> feeder = client.feeders[0]
+        >>> response = client.api_put(
+        ...    feeder.api_path + "schedules/1",
+        ...    data={
+        ...        "time": "16:35",  # time in 24 hour format
+        ...        "amount": 1,
+        ...    },
+        ...)
 
         """
         return requests.put(URL_SF_API + path, headers=self.headers, json=data)
 
     def api_delete(self, path=""):
         """
-        Sends a DELETE to PetSafe SmartFeed API.
+        Sends a DELETE request to PetSafe.
 
-        Example: api_delete(path=feeder.api_path + 'schedules')
+        Parameters
+        ----------
+        path : str
+            URL path on the API (it is prepended by the API URL)
 
-        :param path: the path on the API
-        :return: the request response
+        Returns
+        -------
+        Response
+            Response received from PetSafe
+
+        Examples
+        --------
+        >>> client = PetSafeClient("example@email.com", refresh_token="XXXX")
+        >>> feeder = client.feeders[0]
+        >>> response = client.api_delete(feeder.api_path + "schedules/1")
 
         """
         return requests.delete(URL_SF_API + path, headers=self.headers)

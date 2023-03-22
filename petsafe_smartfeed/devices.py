@@ -4,14 +4,24 @@ from warnings import warn
 
 def get_feeders(client):
     """
-    Sends a request to PetSafe's API for all feeders associated with account.
+    Sends a request to PetSafe for all feeders associated with an account.
 
-    :param client: PetSafeClient with authorization tokens
-    :return: list of Feeders
+    .. deprecated:: 2.3
+              `get_feeders` will be removed in the next version.
+              Use `PetSafeClient.feeders` instead.
+
+    Parameters
+    ----------
+    client : PetSafeClient
+        Authorized PetSafe client
+
+    Returns
+    -------
+    list of DeviceSmartFeed
 
     """
     warn(
-        "`get_feeders` will be removed in the next version. Use `client.feeders` instead.",
+        "`get_feeders` will be removed in the next version. Use `PetSafeClient.feeders` instead.",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -26,26 +36,39 @@ class DeviceSmartFeed:
         """
         PetSafe SmartFeed device.
 
-        :param client: PetSafeClient with authorization tokens
-        :param data: data regarding feeder
+        Parameters
+        ----------
+        client : PetSafeClient
+            Authorized PetSafe client
+        data : dict
+            PetSafe's provided JSON feeder data
+
+        Notes
+        -----
+        It is recommended you retrieve this using `PetSafeClient.feeders`.
+
         """
         self.client = client
         self.data = data
 
     def __str__(self):
+        """
+        An alias of `to_json`.
+
+        """
         return self.json
 
     @property
     def json(self):
         """
-        All feeder data formatted as JSON.
+        Feeder data formatted as JSON.
 
         """
         return json.dumps(self.data, indent=2)
 
     def update_data(self):
         """
-        Updates self.data to the feeder's current online state.
+        Updates `self.data` to the feeder's current state from PetSafe.
 
         """
         response = self.client.api_get(self.api_path)
@@ -54,11 +77,17 @@ class DeviceSmartFeed:
 
     def put_setting(self, setting, value, force_update=False):
         """
-        Changes the value of a specified setting. Sends PUT to API.
+        Changes a value of the feeder's settings.
 
-        :param setting: the setting to change
-        :param value: the new value of that setting
-        :param force_update: if True, update ALL data after PUT. Defaults to False.
+        Parameters
+        ----------
+        setting : str
+            Name of setting to be changed
+        value
+            Value of setting to apply
+        force_update : bool, optional
+            If True, updates ALL device data after PUT.
+            Defaults to False.
 
         """
         response = self.client.api_put(
@@ -76,10 +105,18 @@ class DeviceSmartFeed:
 
     def get_messages_since(self, days=7):
         """
-        Requests all feeder messages.
+        Requests feeder messages since a specified date.
 
-        :param days: how many days to request back. Defaults to 7.
-        :return: the APIs response in JSON.
+        Parameters
+        ----------
+        days : int, optional
+            Number of days to request back.
+            Default to 7.
+
+        Returns
+        -------
+        dict
+            JSON data returned from PetSafe
 
         """
         response = self.client.api_get(self.api_path + "messages?days=" + str(days))
@@ -88,9 +125,12 @@ class DeviceSmartFeed:
 
     def get_last_feeding(self):
         """
-        Finds the last feeding in the feeder's messages.
+        Requests the most recent feeding message within past 7 days.
 
-        :return: the feeding message, if found. Otherwise, None.
+        Returns
+        -------
+        dict or None
+            JSON data returned from PetSafe
 
         """
         messages = self.get_messages_since()
@@ -101,11 +141,18 @@ class DeviceSmartFeed:
 
     def feed(self, amount=1, slow_feed=None, update_data=True):
         """
-        Triggers the feeder to begin feeding.
+        Requests the feeder to start a feeding.
 
-        :param amount: the amount to feed in 1/8 increments.
-        :param slow_feed: if True, will use slow feeding. If None, defaults to current settings.
-        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+        Parameters
+        ----------
+        amount : int
+            Amount to feed in increments of 1/8
+        slow_feed : bool, optional
+            If True, will use slow feeding.
+            Defaults to current setting.
+        update_data : bool
+            If True, updates ALL device data after the request.
+            Defaults to True.
 
         """
         if slow_feed is None:
@@ -140,9 +187,12 @@ class DeviceSmartFeed:
 
     def get_schedules(self):
         """
-        Requests all feeding schedules.
+        Requests all scheduled feeds.
 
-        :return: the APIs response in JSON.
+        Returns
+        -------
+        dict
+            JSON data returned from PetSafe
 
         """
         response = self.client.api_get(self.api_path + "schedules")
@@ -151,14 +201,27 @@ class DeviceSmartFeed:
 
     def schedule_feed(self, time="00:00", amount=1, update_data=True):
         """
-        DEPRECATED: Use `add_schedule` instead.
+        Adds scheduled feed with time and food amount.
 
-        Adds time and feed amount to schedule.
+        .. deprecated:: 2.3
+                  `schedule_feed` will be removed in the next version.
+                  Use `add_schedule` instead.
 
-        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
-        :param amount: the amount to feed in 1/8 increments.
-        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
-        :return: the unique id of the scheduled feed in json
+        Parameters
+        ----------
+        time : str
+            Time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
+        amount : int
+            Amount to feed in increments of 1/8
+        update_data
+            If True, updates ALL device data after the request.
+            Defaults to True.
+
+        Returns
+        -------
+        dict
+            JSON data returned from PetSafe
+            (Unique ID of the scheduled feed)
 
         """
         warn(
@@ -170,12 +233,23 @@ class DeviceSmartFeed:
 
     def add_schedule(self, time="00:00", amount=1, update_data=True):
         """
-        Adds time and feed amount to schedule.
+        Adds scheduled feed with time and food amount.
 
-        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
-        :param amount: the amount to feed in 1/8 increments.
-        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
-        :return: the unique id of the scheduled feed in json
+        Parameters
+        ----------
+        time : str
+            Time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
+        amount : int
+            Amount to feed in increments of 1/8
+        update_data
+            If True, updates ALL device data after the request.
+            Defaults to True.
+
+        Returns
+        -------
+        dict
+            JSON data returned from PetSafe
+            (Unique ID of the scheduled feed)
 
         """
         response = self.client.api_post(
@@ -194,12 +268,19 @@ class DeviceSmartFeed:
 
     def modify_schedule(self, time="00:00", amount=1, schedule_id="", update_data=True):
         """
-        Modifies the specified schedule.
+        Modifies the food amount and time of the specified scheduled feed ID.
 
-        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
-        :param amount: the amount to feed in 1/8 increments.
-        :param schedule_id: the id of the scheduled feed to delete (six digits as of writing)
-        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+        Parameters
+        ----------
+        time : str
+            Time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
+        amount : int
+            Amount to feed in increments of 1/8
+        schedule_id : str
+            Unique ID of the schedule to modify
+        update_data
+            If True, updates ALL device data after the request.
+            Defaults to True.
 
         """
         response = self.client.api_put(
@@ -216,10 +297,15 @@ class DeviceSmartFeed:
 
     def delete_schedule(self, schedule_id="", update_data=True):
         """
-        Deletes specified schedule.
+        Deletes the specified scheduled feed ID.
 
-        :param schedule_id: the id of the scheduled feed to delete (six digits as of writing)
-        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+        Parameters
+        ----------
+        schedule_id : str
+            Unique ID of the schedule to modify
+        update_data
+            If True, updates ALL device data after the request.
+            Defaults to True.
 
         """
         response = self.client.api_delete(self.api_path + "schedules/" + schedule_id)
@@ -230,9 +316,13 @@ class DeviceSmartFeed:
 
     def delete_all_schedules(self, update_data=True):
         """
-        Deletes all schedules.
+        Deletes all scheduled feeds.
 
-        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+        Parameters
+        ----------
+        update_data
+            If True, updates ALL device data after the request.
+            Defaults to True.
 
         """
         response = self.client.api_delete(self.api_path + "schedules")
@@ -243,22 +333,34 @@ class DeviceSmartFeed:
 
     @property
     def api_name(self):
-        """The feeder's thing_name from the API."""
+        """
+        Feeder's thing_name from the API.
+
+        """
         return self.data["thing_name"]
 
     @property
     def api_path(self):
-        """The feeder's path on the API."""
+        """
+        Feeder's path on the API.
+
+        """
         return "feeders/" + self.api_name + "/"
 
     @property
     def id(self):
-        """The feeder's ID."""
+        """
+        Feeder's ID.
+
+        """
         return self.data["id"]
 
     @property
     def battery_voltage(self):
-        """The feeder's calculated current battery voltage."""
+        """
+        Feeder's calculated current battery voltage.
+
+        """
         try:
             return round(int(self.data["battery_voltage"]) / 32767 * 7.2, 3)
         except ValueError:
@@ -267,8 +369,8 @@ class DeviceSmartFeed:
     @property
     def battery_level(self):
         """
-        The feeder's current battery level on a scale of 0-100.
-        Returns 0 if no batteries installed.
+        Feeder's current battery level on a scale of 0-100.
+        Will return 0 if no batteries installed.
 
         """
         if not self.data["is_batteries_installed"]:
@@ -289,7 +391,7 @@ class DeviceSmartFeed:
         If True, the feeder will not follow its scheduling.
 
         Setting this property automatically updates via the API.
-        This will not request an update for ALL device data.
+        This does not update ALL device data.
 
         """
         return self.data["settings"]["paused"]
@@ -304,7 +406,7 @@ class DeviceSmartFeed:
         If true, the feeder will dispense food slowly.
 
         Setting this property changes the setting via the API.
-        This will not request an update for ALL device data.
+        This does not update ALL device data.
 
         """
         return self.data["settings"]["slow_feed"]
@@ -319,7 +421,7 @@ class DeviceSmartFeed:
         If true, the feeder's physical button is disabled.
 
         Setting this property changes the setting via the API.
-        This will not request an update for ALL device data.
+        This does not update ALL device data.
 
         """
         return self.data["settings"]["child_lock"]
@@ -334,7 +436,7 @@ class DeviceSmartFeed:
         The feeder's display name.
 
         Setting this property changes the setting via the API.
-        This will not request an update for ALL device data.
+        This does not update ALL device data.
 
         """
         return self.data["settings"]["friendly_name"]
@@ -346,10 +448,10 @@ class DeviceSmartFeed:
     @property
     def pet_type(self):
         """
-        The feeder's pet type.
+        Feeder's pet type.
 
         Setting this property changes the setting via the API.
-        This will not request an update for ALL device data.
+        This does not update ALL device data.
 
         """
         return self.data["settings"]["pet_type"]
@@ -360,15 +462,17 @@ class DeviceSmartFeed:
 
     @property
     def food_sensor_current(self):
-        """The feeder's food sensor status."""
+        """
+        Feeder's food sensor status.
+
+        """
         return self.data["food_sensor_current"]
 
     @property
     def food_low_status(self):
         """
-        The feeder's food low status.
-
-        :return: 0 if Full, 1 if Low, 2 if Empty
+        Feeder's food low status.
+        (0 if Full, 1 if Low, 2 if Empty)
 
         """
         return int(self.data["is_food_low"])
