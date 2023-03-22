@@ -4,6 +4,8 @@ import time
 import boto3
 import requests
 
+from petsafe_smartfeed.devices import DeviceSmartFeed
+
 URL_SF_API = "https://platform.cloud.petsafe.net/smart-feed/"
 PETSAFE_CLIENT_ID = "18hpp04puqmgf5nc6o474lcp2g"
 PETSAFE_REGION = "us-east-1"
@@ -40,6 +42,21 @@ class PetSafeClient:
         headers["Authorization"] = self.id_token
 
         return headers
+
+    @property
+    def feeders(self):
+        """
+        Sends a request to PetSafe's API for all feeders associated with account.
+
+        :return: list of Feeders
+
+        """
+        response = self.api_get("feeders")
+        response.raise_for_status()
+        content = response.content.decode("UTF-8")
+        return [
+            DeviceSmartFeed(self, feeder_data) for feeder_data in json.loads(content)
+        ]
 
     def request_code(self):
         """

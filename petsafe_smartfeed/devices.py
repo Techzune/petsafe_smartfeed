@@ -10,6 +10,11 @@ def get_feeders(client):
     :return: list of Feeders
 
     """
+    warn(
+        "`get_feeders` will be deprecated in a future version. Use client.feeders instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     response = client.api_get("feeders")
     response.raise_for_status()
     content = response.content.decode("UTF-8")
