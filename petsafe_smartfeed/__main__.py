@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from petsafe_smartfeed import PetSafeClient
+import petsafe_smartfeed as sf
 
 # create parser for arguments
 parser = argparse.ArgumentParser(usage="python -m petsafe_smartfeed email [-t email_code]")
@@ -15,7 +15,7 @@ if len(sys.argv) < 2:
 # parse for arguments
 args = parser.parse_args()
 
-client = PetSafeClient(email=args.email)
+client = sf.PetSafeClient(email=args.email)
 client.request_code()
 print("Code requested, please check your email.")
 print("")
