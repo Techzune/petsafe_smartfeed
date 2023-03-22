@@ -1,4 +1,5 @@
 import json
+from warnings import warn
 
 
 def get_feeders(client):
@@ -144,6 +145,25 @@ class DeviceSmartFeed:
 
     def schedule_feed(self, time="00:00", amount=1, update_data=True):
         """
+        DEPRECATED: Use `add_schedule` instead.
+
+        Adds time and feed amount to schedule.
+
+        :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
+        :param amount: the amount to feed in 1/8 increments.
+        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
+        :return: the unique id of the scheduled feed in json
+
+        """
+        warn(
+            "schedule_feed will be replaced with add_schedule in the next version.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.add_schedule(time, amount, update_data)
+
+    def add_schedule(self, time="00:00", amount=1, update_data=True):
+        """
         Adds time and feed amount to schedule.
 
         :param time: the time to dispense the food in 24 hour notation with colon separation (e.g. 16:35 for 4:35PM)
@@ -251,7 +271,8 @@ class DeviceSmartFeed:
         maxVoltage = 29100
         return round(
             max(
-                (100 * (int(self.data["battery_voltage"]) - minVoltage)) / (maxVoltage - minVoltage),
+                (100 * (int(self.data["battery_voltage"]) - minVoltage))
+                / (maxVoltage - minVoltage),
                 0,
             )
         )
