@@ -258,7 +258,13 @@ class DeviceSmartFeed:
 
     @property
     def paused(self):
-        """If true, the feeder will not follow its scheduling."""
+        """
+        If True, the feeder will not follow its scheduling.
+
+        Setting this property automatically updates via the API.
+        This will not request an update for ALL device data.
+
+        """
         return self.data["settings"]["paused"]
 
     @paused.setter
@@ -267,7 +273,13 @@ class DeviceSmartFeed:
 
     @property
     def slow_feed(self):
-        """If true, the feeder will dispense food slowly."""
+        """
+        If true, the feeder will dispense food slowly.
+
+        Setting this property changes the setting via the API.
+        This will not request an update for ALL device data.
+
+        """
         return self.data["settings"]["slow_feed"]
 
     @slow_feed.setter
@@ -276,7 +288,13 @@ class DeviceSmartFeed:
 
     @property
     def child_lock(self):
-        """If true, the feeder's physical button is disabled."""
+        """
+        If true, the feeder's physical button is disabled.
+
+        Setting this property changes the setting via the API.
+        This will not request an update for ALL device data.
+
+        """
         return self.data["settings"]["child_lock"]
 
     @child_lock.setter
@@ -285,7 +303,13 @@ class DeviceSmartFeed:
 
     @property
     def friendly_name(self):
-        """The feeder's display name."""
+        """
+        The feeder's display name.
+
+        Setting this property changes the setting via the API.
+        This will not request an update for ALL device data.
+
+        """
         return self.data["settings"]["friendly_name"]
 
     @friendly_name.setter
@@ -294,7 +318,13 @@ class DeviceSmartFeed:
 
     @property
     def pet_type(self):
-        """The feeder's pet type."""
+        """
+        The feeder's pet type.
+
+        Setting this property changes the setting via the API.
+        This will not request an update for ALL device data.
+
+        """
         return self.data["settings"]["pet_type"]
 
     @pet_type.setter
