@@ -215,24 +215,6 @@ class DeviceSmartFeed:
         if update_data:
             self.update_data()
 
-    def pause_schedules(self, value, update_data=True):
-        """
-        Pauses all schedules.
-
-        :param update_data: if True, will update the feeder's data after feeding. Defaults to True.
-
-        """
-        response = self.client.api_put(
-            self.api_path + "settings/paused",
-            data={
-                "value": value,
-            },
-        )
-        response.raise_for_status()
-
-        if update_data:
-            self.update_data()
-
     @property
     def api_name(self):
         """The feeder's thing_name from the API."""
