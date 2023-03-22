@@ -17,7 +17,7 @@ class PetSafeClient:
         self.email = email
         self.session = session
         self.username = None
-        self.token_expires_time = None
+        self.token_expires_time = 0
         self.challenge_name = None
         self.client = boto3.client("cognito-idp", region_name=PETSAFE_REGION)
 
@@ -75,7 +75,7 @@ class PetSafeClient:
             Session=self.session,
             ChallengeResponses={
                 "ANSWER": re.sub(r"\D", "", code),
-                "USERNAME": self.username,
+                "USERNAME": self.username if self.username is not None else self.email,
             },
         )
         self.id_token = response["AuthenticationResult"]["IdToken"]
